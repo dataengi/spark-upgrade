@@ -1,12 +1,13 @@
 package fix
 import org.apache.spark.sql.{Dataset, SparkSession}
-import org.apache.spark.sql.functions.{col, substring}
+import org.apache.spark.sql.functions.col
+import org.apache.spark.sql.types.StructType
 
 object DatasetGroupByKey {
   def inSource(sparkSession: SparkSession) {
     import sparkSession.implicits._
-    val ds = List("Spark 2.4", "Spark 3.0", "Dotty", "Scala 2.13", "Scala 3.2.1", "test").toDS()
-    val schemaDS = ds.schema
+    val ds: Dataset[String] = List("Spark 2.4", "Spark 3.0", "Dotty", "Scala 2.13", "Scala 3.2.1", "test").toDS()
+    val schemaDS: StructType = ds.schema
     val res = ds.groupByKey(l => l.substring(0, 3)).count()
 
     if ("key".contains(res.columns.head)) println("~~~~~> Spark 3.0") else println("~~~~~> Spark 2.4")
